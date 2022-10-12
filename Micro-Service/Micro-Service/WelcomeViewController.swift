@@ -108,6 +108,8 @@ extension WelcomeViewController: CLLocationManagerDelegate {
             let lon = location.coordinate.longitude
             
             print("latitude = \(lat), longitude = \(lon)")
+            
+            server.addLocation(lat: lat, lon: lon)
         }
     }
     

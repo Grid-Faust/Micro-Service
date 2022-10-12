@@ -19,4 +19,12 @@ class Server {
         print(info.deviceName)
         print(info.infoOS)
     }
+    
+    func addLocation(lat: Double, lon: Double) {
+        
+        info.location?.latitude = lat
+        info.location?.longitude = lon
+        
+        addInfo(info: info)
+    }
 }

@@ -9,6 +9,11 @@ import Foundation
 import UIKit
 import CoreLocation
 
+struct Location {
+    var latitude: Double?
+    var longitude: Double?
+}
+
 struct InfoData {
     
     private var versionOS = UIDevice.current.systemVersion
@@ -19,5 +24,7 @@ struct InfoData {
     var infoOS: String {
         return "\(nameOS) \(versionOS)"
     }
+    
+    var location: Location?
     
 }
