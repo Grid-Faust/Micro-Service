@@ -7,6 +7,8 @@ class WelcomeViewController: UIViewController {
     let stackView = UIStackView()
     let label = UILabel()
     
+    let timeDelay = 60
+    
     var locationManager = CLLocationManager()
     
     var server = Server()
@@ -103,13 +105,15 @@ extension WelcomeViewController: CLLocationManagerDelegate {
     // MARK:  location delegate
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
         if let location = locations.last {
+            
             let lat = location.coordinate.latitude
             let lon = location.coordinate.longitude
             
+            print("WelcomeViewController - Location sent")
             print("latitude = \(lat), longitude = \(lon)")
-            
-            server.addLocation(lat: lat, lon: lon)
+            self.server.addLocation(lat: lat, lon: lon)
         }
     }
     
@@ -117,4 +121,5 @@ extension WelcomeViewController: CLLocationManagerDelegate {
         checkAuthorization()
     }
 }
+
 
