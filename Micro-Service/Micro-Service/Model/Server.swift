@@ -20,11 +20,10 @@ class Server {
         print(info.infoOS)
     }
     
-    func addLocation(lat: Double, lon: Double) {
+    func addLocation(lat: String, lon: String) {
         
-        info.location?.latitude = lat
-        info.location?.longitude = lon
-        
+        info.location = Location(latitude: lat, longitude: lon)
+                
         addInfo(info: info)
     }
 }

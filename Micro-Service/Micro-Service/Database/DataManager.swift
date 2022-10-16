@@ -15,26 +15,36 @@ func addInfo(info: InfoData) {
         ).first!
         let bundlePath = Bundle.main.path(forResource: "Informations", ofType: "db")!
         let flag = copyDatabaseIfNeeded(sourcePath: bundlePath)
+        
         print(flag ? "DataManager - You don't have a Database": "DataManager - You have a Database")
         
         let db = try Connection("\(path)/Informations.db")
         let users = Table("usermac")
         let _id = Expression<Int>("id")
-        
+            
         let deviceID = Expression<String>("Device ID")
         let deviceName = Expression<String>("Device Name")
-        //let location = Expression<[String]>("Location")
         let infoOS = Expression<String>("OS Version")
-        
-        #warning("add Location")
+        let latitude = Expression<String>("Latitude")
+        let longitude = Expression<String>("Longitude")
+
         let infoDeviceIDString = "\(info.deviceID)"
-        try db.run(users.insert(deviceID <- infoDeviceIDString))
+        
+        if flag {
+            try db.run(users.insert(deviceID <- infoDeviceIDString))
+        }
+        
+        try db.run(users.filter(_id == 1).update(deviceID <- infoDeviceIDString))
         try db.run(users.filter(_id == 1).update(deviceName <- info.deviceName))
         try db.run(users.filter(_id == 1).update(infoOS <- info.infoOS))
         
+        if let lat = info.location?.latitude, let lon = info.location?.longitude {
+            try db.run(users.filter(_id == 1).update(latitude <- lat))
+            try db.run(users.filter(_id == 1).update(longitude <- lon))
+        }
         
     } catch {
-        print("Error(DataMenager) \(error)")
+        print("DataMenager - Error(AddInfo): \(error)")
     }
 }
 
@@ -47,7 +57,7 @@ func copyDatabaseIfNeeded(sourcePath: String) -> Bool {
         try FileManager.default.copyItem(atPath: sourcePath, toPath: destinationPath)
         return true
     } catch {
-      print("Error(DataMenager) - error during file copy: \(error)")
+      print("DataMenager - Error(copyDatabaseIfNeeded): \(error)")
         return false
     }
 }

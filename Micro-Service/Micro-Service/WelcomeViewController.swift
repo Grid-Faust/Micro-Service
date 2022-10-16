@@ -7,7 +7,8 @@ class WelcomeViewController: UIViewController {
     let stackView = UIStackView()
     let label = UILabel()
     
-    let timeDelay = 60
+    
+    let timeInterval: TimeInterval = 5
     
     var locationManager = CLLocationManager()
     
@@ -54,9 +55,7 @@ extension WelcomeViewController {
             stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
-}
-
-extension WelcomeViewController {
+    
     func showAlertLocation() {
         let alert = UIAlertController(title: "Служба геолокации выключена", message: "Хотите включить?", preferredStyle: .alert)
         
@@ -87,6 +86,7 @@ extension WelcomeViewController: CLLocationManagerDelegate {
     
     func getUserLocation() {
         if checkAuthorization() {
+            
             setupManager()
         } else {
             showAlertLocation()
@@ -108,13 +108,16 @@ extension WelcomeViewController: CLLocationManagerDelegate {
         
         if let location = locations.last {
             
-            let lat = location.coordinate.latitude
-            let lon = location.coordinate.longitude
+            let lat = String(format: "%.4f", location.coordinate.latitude)
+            let lon = String(format: "%.4f",location.coordinate.longitude)
             
-            print("WelcomeViewController - Location sent")
-            print("latitude = \(lat), longitude = \(lon)")
-            self.server.addLocation(lat: lat, lon: lon)
-        }
+            //print("latitude = \(lat), longitude = \(lon)")
+            DispatchQueue.main.asyncAfter(deadline: .now() + timeInterval) {
+                //print("This message is delayed")
+                print("WelcomeViewController - Location sent")
+                self.server.addLocation(lat: lat, lon: lon)
+            }
+        }        
     }
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {

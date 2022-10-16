@@ -7,11 +7,10 @@
 
 import Foundation
 import UIKit
-import CoreLocation
 
 struct Location {
-    var latitude: Double?
-    var longitude: Double?
+    var latitude: String
+    var longitude: String
 }
 
 struct InfoData {
