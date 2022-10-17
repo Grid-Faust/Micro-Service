@@ -20,7 +20,6 @@ func addInfo(info: InfoData) {
         
         let db = try Connection("\(path)/Informations.db")
         let users = Table("usermac")
-        let _id = Expression<Int>("id")
             
         let deviceID = Expression<String>("Device ID")
         let deviceName = Expression<String>("Device Name")
@@ -30,18 +29,24 @@ func addInfo(info: InfoData) {
 
         let infoDeviceIDString = "\(info.deviceID)"
         
-        if flag {
-            try db.run(users.insert(deviceID <- infoDeviceIDString))
-        }
-        
-        try db.run(users.filter(_id == 1).update(deviceID <- infoDeviceIDString))
-        try db.run(users.filter(_id == 1).update(deviceName <- info.deviceName))
-        try db.run(users.filter(_id == 1).update(infoOS <- info.infoOS))
+//        try db.run(users.insert(deviceID <- infoDeviceIDString,
+//                                deviceName <- info.deviceName,
+//                                infoOS <- info.infoOS)
+//        try db.run(users.filter(_id).update(deviceName <- info.deviceName))
+//        try db.run(users.filter(_id == 1).update(infoOS <- info.infoOS))
         
         if let lat = info.location?.latitude, let lon = info.location?.longitude {
-            try db.run(users.filter(_id == 1).update(latitude <- lat))
-            try db.run(users.filter(_id == 1).update(longitude <- lon))
-        }
+            
+            try db.run(users.insert(deviceID <- infoDeviceIDString,
+                                    deviceName <- info.deviceName,
+                                    infoOS <- info.infoOS,
+                                    latitude <- lat,
+                                    longitude <- lon))
+        } else {
+            try db.run(users.insert(deviceID <- infoDeviceIDString,
+                                        deviceName <- info.deviceName,
+                                        infoOS <- info.infoOS))
+            }
         
     } catch {
         print("DataMenager - Error(AddInfo): \(error)")
@@ -60,4 +65,30 @@ func copyDatabaseIfNeeded(sourcePath: String) -> Bool {
       print("DataMenager - Error(copyDatabaseIfNeeded): \(error)")
         return false
     }
+}
+
+func deleteItemFromList(lat: String, lon: String){
+
+    do {
+        let path = NSSearchPathForDirectoriesInDomains(
+            .documentDirectory, .userDomainMask, true
+        ).first!
+        let bundlePath = Bundle.main.path(forResource: "Informations", ofType: "db")!
+        let flag = copyDatabaseIfNeeded(sourcePath: bundlePath)
+        
+        print(flag ? "DataManager - You don't have a Database": "DataManager - You have a Database")
+        
+        let db = try Connection("\(path)/Informations.db")
+        let users = Table("usermac")
+        
+        let latitude = Expression<String>("Latitude")
+        let longitude = Expression<String>("Longitude")
+        
+        
+        // check parametrs
+        try db.run(users.filter(latitude == lat && longitude == lon).delete())
+    } catch {
+        print("DataMenager - Error(deleteItemFromList): \(error)")
+    }
+        
 }
