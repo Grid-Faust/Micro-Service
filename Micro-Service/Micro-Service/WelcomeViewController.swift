@@ -7,8 +7,10 @@ class WelcomeViewController: UIViewController {
     let stackView = UIStackView()
     let label = UILabel()
     
+    var k = 1
     
-    let timeInterval: TimeInterval = 5
+    #warning("time Interval == 60")
+    let timeInterval: TimeInterval = 1
     
     var locationManager = CLLocationManager()
     
@@ -106,22 +108,40 @@ extension WelcomeViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
+        locationManager.stopUpdatingLocation()
+        
         if let location = locations.last {
             
             let lat = String(format: "%.4f", location.coordinate.latitude)
             let lon = String(format: "%.4f",location.coordinate.longitude)
-            
+                        
             //print("latitude = \(lat), longitude = \(lon)")
+            //print("This message is delayed")
+            print("WelcomeViewController - Location sent --- \(self.k)")
+            //self.server.addLocation(lat: lat, lon: lon)
+            deleteItemFromList(at: 78, before: 84)
+            
+            self.k += 1
+            
+            //Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(delay), userInfo: nil, repeats: true)
             DispatchQueue.main.asyncAfter(deadline: .now() + timeInterval) {
-                //print("This message is delayed")
-                print("WelcomeViewController - Location sent")
-                self.server.addLocation(lat: lat, lon: lon)
+                self.locationManager.startUpdatingLocation()
             }
-        }        
+        }
+        
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("WelcomeViewController (location - didFailwithError) \(error)")
     }
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         checkAuthorization()
+    }
+    
+    @objc func delay() {
+        locationManager.startUpdatingLocation()
+       // RunLoop.current.add(Timer, forMode: .common)
     }
 }
 

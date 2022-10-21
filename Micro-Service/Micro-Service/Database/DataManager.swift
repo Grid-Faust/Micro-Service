@@ -16,7 +16,7 @@ func addInfo(info: InfoData) {
         let bundlePath = Bundle.main.path(forResource: "Informations", ofType: "db")!
         let flag = copyDatabaseIfNeeded(sourcePath: bundlePath)
         
-        print(flag ? "DataManager - You don't have a Database": "DataManager - You have a Database")
+       // print(flag ? "DataManager - You don't have a Database": "DataManager - You have a Database")
         
         let db = try Connection("\(path)/Informations.db")
         let users = Table("usermac")
@@ -67,7 +67,7 @@ func copyDatabaseIfNeeded(sourcePath: String) -> Bool {
     }
 }
 
-func deleteItemFromList(lat: String, lon: String){
+func deleteItemFromList(at startID: Int, before finishID: Int){
 
     do {
         let path = NSSearchPathForDirectoriesInDomains(
@@ -81,12 +81,16 @@ func deleteItemFromList(lat: String, lon: String){
         let db = try Connection("\(path)/Informations.db")
         let users = Table("usermac")
         
-        let latitude = Expression<String>("Latitude")
-        let longitude = Expression<String>("Longitude")
-        
-        
+        let _id = Expression<Int>("id")
+        //print(users.filter(listNumber == 1).exists)
+//        let firstID = users[_id]
+//        print("first ID - \(firstID)")
+//        let range = firstID + deleteID
+//        print("range - \(range)")
+                
         // check parametrs
-        try db.run(users.filter(latitude == lat && longitude == lon).delete())
+        try db.run(users.filter(_id >= startID && _id <= finishID).delete())
+        
     } catch {
         print("DataMenager - Error(deleteItemFromList): \(error)")
     }

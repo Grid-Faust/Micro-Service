@@ -28,6 +28,7 @@ class Server {
     }
     
     
+    
     func sendJson(info: InfoData) {  //TODO: fix the func
             
             let dataJson: [String : Any] = [
