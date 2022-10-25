@@ -10,7 +10,7 @@ class WelcomeViewController: UIViewController {
     var k = 1
     
     #warning("time Interval == 60")
-    let timeInterval: TimeInterval = 1
+    let timeInterval: TimeInterval = 100
     
     var locationManager = CLLocationManager()
     
@@ -22,8 +22,7 @@ class WelcomeViewController: UIViewController {
         layout()
         
         getUserLocation()
-        server.printInfo()
-        
+        //server.printInfo()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -118,9 +117,7 @@ extension WelcomeViewController: CLLocationManagerDelegate {
             //print("latitude = \(lat), longitude = \(lon)")
             //print("This message is delayed")
             print("WelcomeViewController - Location sent --- \(self.k)")
-            //self.server.addLocation(lat: lat, lon: lon)
-            deleteItemFromList(at: 78, before: 84)
-            
+            self.server.addLocation(lat: lat, lon: lon)
             self.k += 1
             
             //Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(delay), userInfo: nil, repeats: true)

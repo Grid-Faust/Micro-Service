@@ -27,3 +27,31 @@ struct InfoData {
     var location: Location?
     
 }
+
+enum JsonEnum : String {
+    case deviceID = "device ID"
+    case deviceName = "device Name"
+    case OS = "OS"
+    case location = "location"
+    case lat = "latitude"
+    case lon = "longitude"
+}
+
+//struct JsonData {
+//    
+//    private var versionOS = UIDevice.current.systemVersion
+//    private var nameOS = UIDevice.current.systemName
+//    
+//    var data: [String : Any] = [
+//    "device ID": "\(UUID())",
+//    "device Name": UIDevice.current.name,
+//    "OS": "\(nameOS) \(versionOS)",
+//    "location": [["latitude": String,
+//                 "longitude": String]]
+//    ]
+//    
+//    init(lat: String, lon: String) {
+//        data[JsonEnum.location.rawValue] = ["latitude" = lat,
+//                                        "longitude" = lon ]
+//    }
+//}

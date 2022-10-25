@@ -24,20 +24,30 @@ class Server {
         
         info.location = Location(latitude: lat, longitude: lon)
                 
-        addInfo(info: info)
+        sendJson(info: info)
     }
     
     
     
     func sendJson(info: InfoData) {  //TODO: fix the func
+        
+        if 200 == 200 {
+            let users = getFromDatabase()
+            print(users)
             
-            let dataJson: [String : Any] = [
-                "device ID": info.deviceID,
+        } else {
+            
+            let dataJson: [String : String] = [
+                "device ID": "\(info.deviceID)",
                 "device Name": info.deviceName,
                 "OS": info.infoOS,
-                "location": [["latitude": info.location?.latitude,
-                             "longitude": info.location?.longitude]]
+                "latitude": info.location?.latitude ?? "Unknown",
+                "longitude": info.location?.longitude ?? "Unknown"
             ]
+        
+        addInfoToDB(info: dataJson)
+        }
+        /*
 
             let jsonData = try? JSONSerialization.data(withJSONObject: dataJson)
             
@@ -72,4 +82,6 @@ class Server {
             }
             task.resume()
         }
+         */
+    }
 }
