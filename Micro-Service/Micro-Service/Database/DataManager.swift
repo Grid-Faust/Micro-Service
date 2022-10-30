@@ -15,6 +15,34 @@ let infoOS = Expression<String>("OS Version")
 let latitude = Expression<String>("Latitude")
 let longitude = Expression<String>("Longitude")
 
+func isEmptyDatabase() -> Bool? {
+    do {
+        let path = NSSearchPathForDirectoriesInDomains(
+            .documentDirectory, .userDomainMask, true
+        ).first!
+                
+        let db = try Connection("\(path)/Informations.db")
+        let users = Table("usermac")
+        
+        let id = Expression<Int>("id")
+        
+        for item in try db.prepare(users) {
+            if let id = item[id] as? Int {
+                if id == 0 {
+                    return true
+                } else {
+                    return false
+                }
+            }
+        }
+        
+    } catch {
+        print("DataMenager - Error(isEmptyDatabase): \(error)")
+    }
+    return nil
+    
+}
+
 func addInfoToDB(info: [String : Any]) {
     do {
         let path = NSSearchPathForDirectoriesInDomains(
@@ -30,7 +58,7 @@ func addInfoToDB(info: [String : Any]) {
             
         
         
-        let data = Expression<Blob>("Data")
+        //let data = Expression<Blob>("Data")
         
 
         let infoDeviceIDString = "\(info[JsonEnum.deviceID.rawValue]!)"
@@ -87,7 +115,6 @@ func getFromDatabase() -> [[String: String]]? {
         let path = NSSearchPathForDirectoriesInDomains(
             .documentDirectory, .userDomainMask, true
         ).first!
-        let bundlePath = Bundle.main.path(forResource: "Informations", ofType: "db")!
                 
         let db = try Connection("\(path)/Informations.db")
         let users = Table("usermac")
@@ -141,12 +168,6 @@ func deleteItemFromList(at startID: Int){
         let users = Table("usermac")
         
         let _id = Expression<Int>("id")
-        //print(users.filter(listNumber == 1).exists)
-//        let firstID = users[_id]
-//        print("first ID - \(firstID)")
-//        let range = firstID + deleteID
-//        print("range - \(range)")
-                
         // check parametrs
         try db.run(users.filter(_id == startID).delete())
         
